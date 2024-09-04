@@ -1,82 +1,74 @@
-**File Compression Using Huffman's Algorithm**
-=========================
+--
 
+# File Compression Using Huffman's Algorithm
 
-About
-=====
+## About
 
-Huffman Algorithm is an efficient way for file Compression and Decompression.
-This program exactly follows huffman algorithm. It reads frequent characters from input file and replace it with shorter binary codeword.
-The original file can be produced again without loosing any bit.
+Huffman’s Algorithm is an efficient technique for file compression and decompression. This program strictly adheres to the Huffman algorithm by reading the most frequent characters from an input file and replacing them with shorter binary codewords. The original file can be reconstructed perfectly, without any data loss.
 
-Usage
-=====
-Compression:
+## Usage
+
+### Compression:
+```bash
+./encode <file to compress>
 ```
-	./encode <file to compress>
+This will generate an output file named `<inputfile>.spd`.
+
+### Decompression:
+```bash
+./decode <file to decompress>
 ```
-Output file named <inputfile>.spd will be produced.
-Decompression:
-```
-	./decode <file to uncompress>
-```
- 
-File Structure
-============================
 
-<table>
-<tr> <td colspan="2">  N= total number of unique characters(1 byte)              </td> </tr>
-<tr> <td> Character[1 byte]   </td><td>  Binary codeword String Form[MAX bytes]  </td> </tr>
-<tr> <td> Character[1 byte]   </td><td>  Binary codeword String Form[MAX bytes]  </td> </tr>
-<tr> <td colspan="2">              N times                                       </td> </tr>
-<tr> <td> p (1 byte)          </td><td> p times 0's (p bits)                     </td> </tr>
-<tr> <td colspan="2">  DATA                                                      </td> </tr>
-</table>
+## File Structure
 
-p = Padding done to ensure file fits in whole number of bytes. eg, file of 4 bytes + 3 bits must ne padded by 5 bits to make it 5 bytes.
+The compressed file structure is as follows:
 
-Example
-----------------------------
-Text: aabcbaab
+| Field                       | Description                                             |
+|-----------------------------|---------------------------------------------------------|
+| N (1 byte)                  | Total number of unique characters                       |
+| Character (1 byte)          | The character                                           |
+| Binary Codeword (MAX bytes) | The corresponding binary codeword                       |
+| p (1 byte)                  | Padding count (number of bits added to align to bytes)  |
+| DATA                        | The compressed data                                     |
 
-| Content                           | Comment                               |
-|-----------------------------------|---------------------------------------|
-|3                                  | N=3 (a,b,c)                           |
-|a "1"                              | character and corresponding code "1"  |
-|b "01"                             | character and corresponding code "01" |
-|c "00"                             | character and corresponding code "00" |
-|4              		    | Padding count                         |
-|[0000] 				    | Padding 4 zeroes                      |
-|[1] [1] [01] [00] [01] [1] [1] [01]| Actual data, code in place of char    |
+*Note*: Padding is added to ensure the file size is a whole number of bytes. For example, if the file size is 4 bytes + 3 bits, it will be padded by 5 bits to make it 5 bytes.
 
-Algorithm
-============================
-0. **(Pass 1)** Read input file
-0. Create sorted linked list of characters from file, as per character frequency
-   ```
-   for eah character ch from file
+## Example
 
-	if( ch available in linked list at node p) then 
-	{
-		p.freq++;
-		sort Linked list as per node's freq;
-	}
-	else
-		add new node at beginning of linked list with frequency=1;
-   ```
-0. Construct huffman tree from linked list
-   0. Create new node q, join two least freq nodes to its left and right
-   0. Insert created node q into ascending list
-   0. Repeat i & ii till only one nodes remains, i.e, ROOT of h-tree
-   0. Traverse tree in preorder mark each node with its codeword. simultaneously Recreate linked list of leaf nodes.
-0. Write Mapping Table(character to codeword) to output file.
-0. **(Pass 2)** Read input file.
-0. Write codeword in place of each character in input file to output file
-   for each character ch from input file
-	write corresponding codeword into o/p file (lookup in mapping table OR linked list)
-0. End
+For the text: `aabcbaab`
+
+| Content                           | Description                              |
+|-----------------------------------|------------------------------------------|
+| 3                                 | N = 3 (unique characters: a, b, c)       |
+| a "1"                             | Character 'a' with codeword "1"          |
+| b "01"                            | Character 'b' with codeword "01"         |
+| c "00"                            | Character 'c' with codeword "00"         |
+| 4                                 | Padding count: 4                         |
+| [0000]                            | 4 zeroes added as padding                |
+| [1] [1] [01] [00] [01] [1] [1] [01]| Actual data with codewords replacing chars|
+
+## Algorithm
+
+### Step-by-Step Process:
+
+1. **Pass 1:** Read the input file.
+2. Create a sorted linked list of characters from the file based on frequency:
+   - For each character `ch` in the file:
+     - If `ch` is already in the linked list, increase its frequency and re-sort the list.
+     - If `ch` is not in the list, add a new node at the beginning with a frequency of 1.
+3. Construct the Huffman tree from the linked list:
+   - Create a new node `q`, joining the two least frequent nodes as its left and right children.
+   - Insert node `q` back into the list in ascending order.
+   - Repeat this process until only one node remains, which becomes the root of the Huffman tree.
+   - Traverse the tree in pre-order, assigning codewords to each node and recreating the linked list with the leaf nodes.
+4. Write the mapping table (character to codeword) to the output file.
+5. **Pass 2:** Read the input file again.
+6. Replace each character in the input file with its corresponding codeword in the output file by looking it up in the mapping table or linked list.
+7. End.
+
+## Development
+
+Sannidhi Hemanth
 
 
-Development
-===========
-
+---
